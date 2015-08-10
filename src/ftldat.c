@@ -26,9 +26,26 @@ THE SOFTWARE.
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <string.h>
 #include <endian.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
 #include "ftldat.h"
+
+static int create_directory_for(const char* name)
+{
+  char* path = strdup(name);
+  for (char* p = path; *p != '\0'; ++p) {
+    if (*p == '/') {
+      *p = '\0';
+      mkdir(path, S_IRWXU | S_IRWXG | S_IRWXO);
+      *p = '/';
+    }
+  }
+  free(path);
+  return 0;
+}
 
 static int process_file(FILE* file, uint32_t offset, int action)
 {
@@ -68,6 +85,7 @@ static int process_file(FILE* file, uint32_t offset, int action)
       fprintf(stderr, "Could not read file data\n");
       goto free_data;
     }
+    create_directory_for(name);
     output = fopen(name, "wb");
     if (output == NULL) {
       perror("Opening output file");

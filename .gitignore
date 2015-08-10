@@ -1,6 +1,11 @@
-data/
+
 CMakeCache.txt
 CMakeFiles/
 Makefile
 cmake_install.cmake
 ftldat
+
+data/
+fonts/
+img/
+audio/
