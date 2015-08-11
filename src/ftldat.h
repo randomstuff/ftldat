@@ -27,5 +27,6 @@ THE SOFTWARE.
 #define ACTION_NONE 0
 #define ACTION_LIST 1
 #define ACTION_EXTRACT 2
+#define ACTION_CREATE 4
 
 #endif
