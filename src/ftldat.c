@@ -74,12 +74,11 @@ static int process_file(FILE* file, uint32_t offset, int action)
 
   void* data = NULL;
   FILE* output = NULL;
-  switch(action) {
-  case ACTION_LIST:
+
+  if (action | ACTION_LIST)
     printf("%s\n", name);
-    free(name);
-    break;
-  case ACTION_EXTRACT:
+
+  if (action | ACTION_EXTRACT) {
     data = malloc(data_size);
     if (fread(data, 1, data_size, file) != data_size) {
       fprintf(stderr, "Could not read file data\n");
@@ -97,13 +96,8 @@ static int process_file(FILE* file, uint32_t offset, int action)
     }
     fclose(output);
     free(data);
-    free(name);
-    return 0;
-  default:
-    fprintf(stderr, "Unexpected action\n");
-    goto free_name;
   }
-
+  free(name);
   return 0;
 
 close_output:
@@ -159,14 +153,14 @@ int main(int argc, char** argv)
     fprintf(stderr, "Bad arguments\n");
     return 1;
   }
-  int mode = ACTION_NONE;
+  int action = ACTION_NONE;
   for (char* p = argv[1]; *p != '\0'; ++p) {
     switch(*p) {
     case 'x':
-      mode = ACTION_EXTRACT;
+      action |= ACTION_EXTRACT;
       break;
     case 't':
-      mode = ACTION_LIST;
+      action |= ACTION_LIST;
       break;
     default:
       fprintf(stderr, "Unknown option\n", *p);
@@ -177,14 +171,12 @@ int main(int argc, char** argv)
     fprintf(stderr, "Missing archive name\n");
     return 1;
   }
-  switch(mode) {
-  case ACTION_NONE:
+  if (action == ACTION_NONE) {
     fprintf(stderr, "Missing action\n");
     return 1;
-  case ACTION_EXTRACT:
-  case ACTION_LIST:
-      return process_archive(argv[2], mode);
-  default:
+  } else if (action & ACTION_EXTRACT || action & ACTION_LIST) {
+    return process_archive(argv[2], action);
+  } else {
     fprintf(stderr, "Unknown action\n");
     return 1;
   }
