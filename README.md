@@ -1,6 +1,6 @@
 # Extract/create FTL `.dat` archives
 
-The `*.dat` of FTL files are a concatenation of files.
+The `*.dat` of FTL files are archives of files.
 
 Warning:
 
@@ -10,6 +10,12 @@ Warning:
 - backup your data;
 
 - backup your save files.
+
+There's a [similar tool](https://github.com/bwesterb/ftldat) with the same name
+written in Python.
+
+This is currently working on GNU libc but can work on other OSes with small
+modifications.
 
 ## Usage
 
@@ -31,7 +37,7 @@ ftldat c resources.dat $(cat resources.txt)
 
 ## Format
 
-All values are in little-endian format (ar least on little-endian machines):
+All values are in little-endian format (ar least on little-endian machines).
 
 Header:
 
